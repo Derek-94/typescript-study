@@ -28,9 +28,9 @@ if((tony as DeveloperGuard).skill) {
 
 // 이렇게 하면 접근은 가능한데.. 너무 복잡하다 
 
-// type guard 를 쓰자.
-// 
-// 아래 isDeveloper를 통과하고 나면 인자로 넘겼던 target이 Developer 인지 알수 있다.
+// @@ type guard 를 쓰자.
+
+// 아래 isDeveloper 함수를 통과하고 나면 인자로 넘겼던 target이 Developer 인지 알수 있다.
 function isDeveloper(target: DeveloperGuard | PersonGuard): target is DeveloperGuard {
     return (target as DeveloperGuard).skill !== undefined;
 }

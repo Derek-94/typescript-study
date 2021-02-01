@@ -27,6 +27,7 @@ interface Dropdown2<K> extends Dropdown1<K> {
     tag : K
 }
 
+// string으로 하면 Dropdown1  도 sting을 받는다.
 let detailedItem: Dropdown2<string> = {
     title: "abc",
     description: "aa",
