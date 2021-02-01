@@ -34,7 +34,7 @@ interface Person {
   age: number;
 }
 
-function askSomeone(someone: Developer | Person) {
+function askSomeoneInfo(someone: Developer | Person) {
   someone.name; // O
   someone.age; // X
 }
