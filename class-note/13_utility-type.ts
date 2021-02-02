@@ -12,7 +12,7 @@ function fetchProducts(): Promise<Product[]> {
     // ..
 }
 
-// interface를 또 정의해서 쓸수 있지만, 이는 코드가 중복되고.. 어떻게 재활용 못할까?
+// 이렇게 interface를 또 정의해서 쓸수 있지만, 이는 코드가 중복되고.. 어떻게 재활용 못할까?
 interface ProductDetail {
     id: number,
     price: number,
@@ -48,7 +48,7 @@ function updateProductItem(updadteProduct: Partial<Product>) {
 type updateProductPreview = Partial<Product>
 
 
-// 4. Utility type 구현하기 - Partial
+// 4. Utility type 구현하기 - Partial를 한번 구현해보자!
 interface UserProfile {
     username: string,
     email: string,
