@@ -2,6 +2,17 @@
 
 최종 프로젝트 폴더입니다
 
+## Applying typescript to javascript project
+
+0. 자바스크립트 파일에 JsDoc으로 타입 시스템 입히기
+1. 타입스크립트 프로젝트 생성
+2. 타입스크립트 기본 환경 구성
+    - [x] NPM 초기화 (npm init -y)
+    - [x] 타입스크립트 라이브러리 설치 (npm i typescript)
+    - [x] 타입스크립트설정 파일 생성 (`tsconfig.json` 파일 생성) 및 기본 값 추가
+    - [x] 자바스크립트 파일을 타입스크립트 파일로 변환
+    - [x] `tsc` 명령어로 타입스크립트 커파일 하기
+
 ## 참고 자료
 
 - [존스 홉킨스 코로나 현황](https://www.arcgis.com/apps/opsdashboard/index.html#/bda7594740fd40299423467b48e9ecf6)
