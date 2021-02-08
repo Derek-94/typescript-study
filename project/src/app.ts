@@ -1,3 +1,8 @@
+// axios 는 잘 만들어진 라이브러리다. 거기 안에 .d.ts 파일까지 있어서, 걔가 있으면
+// 정상적으로 import 가 된다. 하지만 chart.js 모듈에는 .d.ts 파일이 없어서 오류난다.
+import axios from 'axios';
+import * as Chart from 'chart.js';
+
 // utils
 function $(selector: string) {
   // document.querySelector를 자주 안쓸수 있다. 개꿀팁!
