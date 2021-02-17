@@ -5,22 +5,23 @@ import * as Chart from 'chart.js';
 import { CovidSummaryResponse, CountrySummaryResponse, Country, CountrySummaryInfo } from "./covid/index"
 
 // utils
-function $(selector: string) {
+function $<T extends HTMLElement = HTMLDivElement>(selector: string) {
   // document.querySelector를 자주 안쓸수 있다. 개꿀팁!
-  return document.querySelector(selector);
+  const element =  document.querySelector(selector);
+  return element as T
 }
 function getUnixTimestamp(date: Date | string) {
   return new Date(date).getTime();
 }
 
 // DOM
-const confirmedTotal = $('.confirmed-total') as HTMLSpanElement;
-const deathsTotal = $('.deaths') as HTMLParagraphElement;
+const confirmedTotal = $<HTMLSpanElement>('.confirmed-total');
+const deathsTotal = $<HTMLParagraphElement>('.deaths');
 const recoveredTotal = $('.recovered') as HTMLSpanElement;
 const lastUpdatedTime = $('.last-updated-time') as HTMLParagraphElement;
-const rankList = $('.rank-list');
-const deathsList = $('.deaths-list');
-const recoveredList = $('.recovered-list');
+const rankList = $('.rank-list') as HTMLOListElement;
+const deathsList = $('.deaths-list') as HTMLOListElement;
+const recoveredList = $('.recovered-list') as HTMLOListElement;
 const deathSpinner = createSpinnerElement('deaths-spinner');
 const recoveredSpinner = createSpinnerElement('recovered-spinner');
 
@@ -41,7 +42,6 @@ function createSpinnerElement(id: string) {
 
 // state
 let isDeathLoading = false;
-const isRecoveredLoading = false;
 
 // api
 function fetchCovidSummary(): Promise<AxiosResponse<CovidSummaryResponse>>  {
@@ -55,7 +55,7 @@ enum CovidStatus {
   Deaths = 'deaths',
 }
 
-function fetchCountryInfo(countryName: string, status: CovidStatus): Promise<AxiosResponse<CountrySummaryResponse>> {
+function fetchCountryInfo(countryName: string | undefined, status: CovidStatus): Promise<AxiosResponse<CountrySummaryResponse>> {
   // params: confirmed, recovered, deaths
   const url = `https://api.covid19api.com/country/${countryName}/status/${status}`;
   return axios.get(url);
@@ -69,16 +69,19 @@ function startApp() {
 
 // events
 function initEvents() {
+  if(!rankList) {
+    return ;
+  }
   rankList.addEventListener('click', handleListClick);
 }
 
-async function handleListClick(event: MouseEvent) {
+async function handleListClick(event: Event) {
   let selectedId;
   if (
     event.target instanceof HTMLParagraphElement ||
     event.target instanceof HTMLSpanElement
   ) {
-    selectedId = event.target.parentElement.id;
+    selectedId = event.target.parentElement ? event.target.parentElement.id : undefined;
   }
   if (event.target instanceof HTMLLIElement) {
     selectedId = event.target.id;
@@ -125,12 +128,12 @@ function setDeathsList(data: CountrySummaryResponse) {
     p.textContent = new Date(value.Date).toLocaleDateString().slice(0, -1);
     li.appendChild(span);
     li.appendChild(p);
-    deathsList.appendChild(li);
+    deathsList!.appendChild(li);
   });
 }
 
 function clearDeathList() {
-  deathsList.innerHTML = null;
+  deathsList!.innerHTML = "";
 }
 
 function setTotalDeathsByCountry(data: CountrySummaryResponse) {
@@ -151,12 +154,13 @@ function setRecoveredList(data: CountrySummaryResponse) {
     p.textContent = new Date(value.Date).toLocaleDateString().slice(0, -1);
     li.appendChild(span);
     li.appendChild(p);
-    recoveredList.appendChild(li);
+    recoveredList?.appendChild(li);
+    // ? is optioal chaining operator..
   });
 }
 
 function clearRecoveredList() {
-  recoveredList.innerHTML = null;
+  recoveredList.innerHTML = "";
 }
 
 function setTotalRecoveredByCountry(data: CountrySummaryResponse) {
@@ -182,11 +186,11 @@ async function setupData() {
   setLastUpdatedTimestamp(data);
 }
 
-function renderChart(data, labels) {
-  const ctx = $('#lineChart').getContext('2d');
+function renderChart(data: number[], labels: string[]) {
+  const ctx = ($('#lineChart') as HTMLCanvasElement).getContext('2d');
   Chart.defaults.global.defaultFontColor = '#f5eaea';
   Chart.defaults.global.defaultFontFamily = 'Exo 2';
-  new Chart(ctx, {
+  new Chart(ctx!, {
     type: 'line',
     data: {
       labels,
@@ -204,10 +208,10 @@ function renderChart(data, labels) {
 }
 
 function setChartData(data: CountrySummaryResponse) {
-  const chartData = data.slice(-14).map(value => value.Cases);
+  const chartData = data.slice(-14).map((value: CountrySummaryInfo) => value.Cases);
   const chartLabel = data
     .slice(-14)
-    .map(value => new Date(value.Date).toLocaleDateString().slice(5, -1));
+    .map((value: CountrySummaryInfo) => new Date(value.Date).toLocaleDateString().slice(5, -1));
   renderChart(chartData, chartLabel);
 }
 
